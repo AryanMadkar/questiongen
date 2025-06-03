@@ -13,6 +13,8 @@ import threading
 from groq import Groq
 from collections import defaultdict
 from dotenv import load_dotenv
+import httpx
+
 
 
 
@@ -20,6 +22,7 @@ load_dotenv()  # Loads the .env file variables into environment variables
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+httpx_client = httpx.Client(proxies=None)
 
 app = Flask(__name__)
 api_key = os.getenv('API_KEY')
@@ -28,7 +31,7 @@ json_sort_key = os.getenv("JSON_SORT_KEYS")
 app.config[json_sort_key] = False
 # Configuration
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", api_key)
-client = Groq(api_key=GROQ_API_KEY)  # No proxies arg
+client = Groq(api_key=GROQ_API_KEY, http_client=httpx_client)
 
 # Enhanced caching system
 class AdvancedCache:
